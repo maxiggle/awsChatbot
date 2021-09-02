@@ -1,25 +1,29 @@
 <template>
   <div id="app" style="max-height:300px">
-    <amplify-chatbot :chatbotConfig="chatbotConfig" :name="getModuleName"></amplify-chatbot>
+    <ChatComponent :chatbotConfig="chatbotConfig" name="OrderFlowers_dev" :completed="completed"/>
   </div>
 </template>
 
 <script>
 import { Interactions } from "aws-amplify";
+import ChatComponent from './components/ChatComponent.vue';
+
 export default {
+  components: { ChatComponent },
   name: "App",
   data: () => ({
+    completed: null,
     chatbotConfig: {
       bot: "OrderFlowers_dev",
       clearComplete: false,
+      chatBot: Interactions
     },
-    getModuleName:{
-      name: "Interactions"
-    },
+  
    
   }),
   mounted() {
     Interactions.onComplete("OrderFlowers_dev", this.handleComplete);
+    console.log(Interactions)
   },
   methods: {
    
@@ -32,15 +36,14 @@ export default {
         alert("bot conversation failed");
         return;
       }
-      alert("done: " + JSON.stringify(confirmation, null, 2));
-
-      return " ";
+      this.completed = confirmation
     },
   },
 };
 </script>
 
 <style>
+* { transition: all .5;}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
